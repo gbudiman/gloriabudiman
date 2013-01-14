@@ -31,11 +31,12 @@ ActiveRecord::Schema.define(:version => 20130110025320) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "credits", ["artist_id", "image_id"], :name => "index_credits_on_artist_id_and_image_id", :unique => true
   add_index "credits", ["artist_id"], :name => "index_credits_on_artist_id"
+  add_index "credits", ["image_id", "artist_id"], :name => "index_credits_on_image_id_and_artist_id", :unique => true
   add_index "credits", ["image_id"], :name => "index_credits_on_image_id"
 
   create_table "images", :force => true do |t|
-    t.integer  "credit_id"
     t.string   "image_link"
     t.string   "facebook_link"
     t.string   "gplus_link"
@@ -48,7 +49,6 @@ ActiveRecord::Schema.define(:version => 20130110025320) do
     t.datetime "updated_at",    :null => false
   end
 
-  add_index "images", ["credit_id"], :name => "index_images_on_credit_id", :unique => true
   add_index "images", ["facebook_link"], :name => "index_images_on_facebook_link", :unique => true
   add_index "images", ["gplus_link"], :name => "index_images_on_gplus_link", :unique => true
   add_index "images", ["image_link"], :name => "index_images_on_image_link", :unique => true
@@ -57,7 +57,6 @@ ActiveRecord::Schema.define(:version => 20130110025320) do
     t.string   "username"
     t.string   "email"
     t.integer  "level"
-    t.integer  "artist_id"
     t.string   "password_digest"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false

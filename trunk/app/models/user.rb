@@ -6,21 +6,18 @@
 #  username        :string(255)
 #  email           :string(255)
 #  level           :integer
-#  artist_id       :integer
 #  password_digest :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #
 
 class User < ActiveRecord::Base
-	has_one :artist
-	belongs_to :artist
+	has_one :artist, dependent: :nullify
 	attr_accessible :username, 
 					:email, 
 					:password, 
 					:password_confirmation,
-					:level, 
-					:artist_id, 
+					:level,  
 					:password_digest
 	has_secure_password
 	before_save { self.email.downcase! }
@@ -41,7 +38,6 @@ class User < ActiveRecord::Base
 					format: 		{ with: VALID_EMAIL_REGEX },
 					uniqueness: 	{ case_sensitive: false }
 	validates :level, numericality: true, inclusion: 1..8
-	validates :artist_id, numericality: true
 	validates :password, presence: true, length: { minimum: 6, maximum: 32 }
 	validates :password_confirmation, 
 					presence: true,

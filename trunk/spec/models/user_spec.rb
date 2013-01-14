@@ -6,7 +6,6 @@
 #  username        :string(255)
 #  email           :string(255)
 #  level           :integer
-#  artist_id       :integer
 #  password_digest :string(255)
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
@@ -19,7 +18,6 @@ describe User do
 		@user = User.new(username: "Sample Name",
 						    email: "valid_email@address.com",
 							level: 1,
-						artist_id: 0,
 				  		 password: "secure",
 			password_confirmation: "secure")
 	end
@@ -29,7 +27,6 @@ describe User do
 	it { should respond_to(:username) }
 	it { should respond_to(:email) }
 	it { should respond_to(:level) }
-	it { should respond_to(:artist_id) }
 	it { should respond_to(:password_digest) }
 	it { should respond_to(:authenticate) }
 	it { should respond_to(:password) }
@@ -141,20 +138,6 @@ describe User do
 			level_tests = [nil, 0, 9, "blabla"]
 			level_tests.each do |level_test|
 				before { @user.level = level_test }
-				it { should_not be_valid }
-			end
-		end
-
-		describe "should be valid" do
-			it { should be_valid }
-		end
-	end
-
-	describe ":artist_id" do
-		describe "must be numeric value" do
-			artist_id_tests = [nil, "blabla"]
-			artist_id_tests.each do |artist_id_test|
-				before { @user.artist_id = artist_id_test }
 				it { should_not be_valid }
 			end
 		end

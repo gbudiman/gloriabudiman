@@ -14,16 +14,17 @@ require 'spec_helper'
 
 describe Artist do
 	before do
-		@artist = Artist.new(artist_name: "Sample Artist",
-							   page_link: "sample_artist",
-							     user_id: 0)
+		@artist = FactoryGirl.create(:artist)
+		@user = FactoryGirl.create(:user)
+		@another_user = FactoryGirl.create(:user,
+			username: "Another Dude",
+			email: "another@dude.com")
 	end
 
 	subject { @artist }
 
 	it { should respond_to(:artist_name) }
 	it { should respond_to(:page_link) }
-	it { should respond_to(:user_id) }
 
 	describe ":artist_name" do
 		describe "must be between 4 to 32 characters-length" do
@@ -40,12 +41,18 @@ describe Artist do
 
 		describe "must be unique" do
 			before do
-				duplicate_artist = @artist.dup
-				duplicate_artist.page_link = "somewhere_else"
-				duplicate_artist.save
-			end
+				@user.save
+				@artist.save
+				@another_user.save
 
-			it { should_not be_valid }
+				@another_artist = FactoryGirl.create(:artist,
+					artist_name: @artist.artist_name,
+					page_link: "another_artist",
+					user_id: @another_user.reload.id)
+				expect { @another_artist.save }.
+					to raise_error(ActiveRecord::RecordInvalid)
+
+			end
 		end
 
 		describe "case-sensitivity must not trigger uniqueness check" do
@@ -94,12 +101,17 @@ describe Artist do
 
 		describe "must be unique" do
 			before do
-				duplicate_artist = @artist.dup
-				duplicate_artist.artist_name = "Someone Else"
-				duplicate_artist.save
-			end
+				@user.save
+				@artist.save
+				@another_user.save
 
-			it { should_not be_valid }
+				@another_artist = FactoryGirl.create(:artist,
+					artist_name: "Another Dude",
+					page_link: @artist.page_link,
+					user_id: @another_user.reload.id)
+				expect { @another_artist.save }.
+					to raise_error(ActiveRecord::RecordInvalid)
+			end
 		end
 
 		describe "when being mixed case" do
@@ -122,6 +134,14 @@ describe Artist do
 
 		describe "should be valid" do
 			it { should be_valid }
+		end
+	end
+
+	describe "must not be saved when no associated User exists" do
+		before do
+			@user.destroy
+			expect { @artist.save }.
+				to raise_error(ActiveRecord::RecordInvalid)
 		end
 	end
 end
