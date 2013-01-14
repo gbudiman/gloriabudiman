@@ -12,8 +12,7 @@
 class Credit < ActiveRecord::Base
 	belongs_to :artist
 	belongs_to :image
-	attr_accessible :image_id, :artist_id
 
-	validates :artist_id, numericality: true, presence: true
-	validates :image_id, numericality: true, presence: true
+	validates :artist_id, presence: true
+	validates :image_id, presence: true
 end

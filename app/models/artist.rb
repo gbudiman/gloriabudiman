@@ -12,8 +12,9 @@
 
 class Artist < ActiveRecord::Base
 	belongs_to :user
-	has_one :user
-	attr_accessible :artist_name, :page_link, :user_id
+	has_many :image, through: :credit
+	has_many :credit, dependent: :destroy
+	attr_accessible :artist_name, :page_link
 	before_save { self.page_link.downcase! }
 
 	VALID_STRING_REGEX = /^[\w\-\s]+$/
